@@ -1,4 +1,4 @@
-aritm�tica
+﻿aritmètica
 ===============
 
 Demonstration nodeJS JSON Application Server, enough to learn client JavaScript, JSON and some server programming.

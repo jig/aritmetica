@@ -18,7 +18,7 @@ var serializedOkResponse = function (response, result) {
 	response.end();	
 }
 
-var serializedRuntimeErrorResponse = function (exception) {
+var serializedRuntimeErrorResponse = function (response, exception) {
 	var resultPacket = {
 		statusOk: false,
 		result: exception

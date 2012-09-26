@@ -13,19 +13,19 @@ function start(port, stub, service) {
 			postData += postDataChunk;
 	    });
 
-		request.addListener("end", function() {
+		request.addListener("end", function () {
 			var pathname = url.parse(request.url, true).pathname.match( '^/(.*)')[1];
 
-			console.log('pathname = ' + pathname);
+			// console.log('pathname = ' + pathname);
 			try {
 				var args = stub.serializedRequest(postData);
-				// service[pathname](args, stub.serializedOkResponse);
-				service[pathname](args, function(result) {
-					stub.serializedOkResponse(response, result);
-				});
+				
+				service[pathname](args, function (result) {
+											stub.serializedOkResponse(response, result);
+										});
 			} catch (exception) {
 				console.log(exception);
-				// stub.serializedRuntimeErrorResponse(exception);
+				stub.serializedRuntimeErrorResponse(response, exception);
 			}
 		});
 	}
