@@ -10,24 +10,50 @@ args
 	.option('-s, --server [number]', 'server address', 'localhost')
 	.option('-1, --arg1 [number]', 0)
 	.option('-2, --arg2 [number]', 0)
+	.option('-r, --rawreq [data]', '{}')
 	.option('-o, --operation [op_name]', 'addition')
 	.parse(process.argv);
 
-var data = JSON.stringify([
+if(args.rawreq) {
+	var data = args.rawreq;
+} else {	
+	var data = JSON.stringify([
 						parseInt(args.arg1, 10), 
 						parseInt(args.arg2, 10)
 					]);
+}
 
-var request = http.request({
-						host: 'localhost',
-						port: 80,
-						method: 'POST',
-						path: '/' + args.operation,
-						headers: {
-							'Content-Length': data.length,
-							'Content-Type': 'application/json'
-						}
-					}, 
+var options = {}
+
+if(args.proxy) {
+	var regex = '([^:]+):([0-9]+)';
+	options = {
+		host: args.proxy.match(regex)[1],
+		port: args.proxy.match(regex)[2],
+		method: 'POST',
+		path: 'http://' + args.proxy + '/' + args.operation,
+		headers: {
+			'Host': args.server,
+			'Content-Length': data.length,
+			'Content-Type': 'application/json'
+		}
+	}
+} else {
+	options = {
+		host: args.server,
+		port: 80,
+		method: 'POST',
+		path: '/' + args.operation,
+		headers: {
+			'Host': args.server,
+			'Content-Length': data.length,
+			'Content-Type': 'application/json'
+		}
+	}
+}
+
+var request = http.request(
+					options, 
 					function(response){
 						var resData = '';
 
@@ -35,12 +61,7 @@ var request = http.request({
 							resData += chunk;
 						});
 						response.on('end', function () {
-							var res = JSON.parse(resData);
-							if(res.statusOk) {
-								console.log("Result: " + res.result);
-							} else {
-								console.log("Error: raw response '" + resData + "'");
-							}
+							console.log("Result: " + resData);
 						});
 					});
 

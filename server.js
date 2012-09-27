@@ -31,7 +31,6 @@ function start(port, stub, service) {
 	}
 
 	http.createServer(onRequest).listen(port);
-	console.log("Server started.");
 }
 
 exports.start = start;
