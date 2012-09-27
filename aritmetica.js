@@ -54,7 +54,11 @@ if(cluster.isMaster) {
 			},
 		distance:
 			function (args, response) {
-				response( Math.sqrt(args[0]*args[0] + args[1]+args[1]) );
+				var result = 0;
+				for(var item = 0; item < args.length; ++item) {
+					result += args[item]*args[item];
+				}
+				response( Math.sqrt(result) );
 			}
 		}
 	server.start(args.port, jsonstub, service);
