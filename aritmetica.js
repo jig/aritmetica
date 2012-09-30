@@ -18,12 +18,14 @@ args
 if(cluster.isMaster) {
 	console.log('Binding to port ', args.port);
 	console.log('Folder path: ', args.folder);
-	console.log('cluster: ' + args.cluster);
+	console.log('Processor: ' + require('os').cpus()[0].model);
 	if(args.cluster) {
-		require('os').cpus().forEach(function () {
+		console.log('Cluster: ' + args.cluster);
+		require('os').cpus().forEach(function (item) {
 										cluster.fork();
 									});
 	} else {
+		console.log('Cluster: no cluster');
 		cluster.fork();
 	}
 } else {

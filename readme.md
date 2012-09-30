@@ -8,7 +8,7 @@ Installing
 
 ### Prerequisites ###
 
-NodeJS (tested with 0.8.9) and commander module (npm install commander)
+NodeJS (tested with 0.8.11) and commander module (npm install commander)
 
 ### Installing ###
 
@@ -20,4 +20,4 @@ Port 80 is used by default. If you do not have the proper privileges, you can ch
 
 ### Client Launch ###
 
-Client invokes server provided aritmetic provides. Use client --help for further instructions.
+Client invokes server provided aritmetic provides. Use client --help for further instructions. It can start several concurrent connections.
