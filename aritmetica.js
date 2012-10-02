@@ -66,3 +66,5 @@ if(cluster.isMaster) {
 	server.start(args.port, jsonstub, service);
 	console.log("Server started: " + cluster.worker.id);	
 }
+
+console.log('.');
