@@ -10,10 +10,11 @@ args
 	.option('-s, --server [number]', 'server address', 'localhost')
 	.option('-1, --arg1 [number]', 'first argument', 0)
 	.option('-2, --arg2 [number]', 'second argument', 0)
-	.option('-r, --rawreq [data]', 'request in JSON sintax', '{}')
+	.option('-r, --rawreq [data]', 'request in JSON sintax')
 	.option('-o, --operation [op_name]', 'operation identifier', 'addition')
 	.option('-n, --number [n]', 'number of concurrent iterations', 1)
 	.option('-c, --concurrent [n]', 'maximum concurrency', 1)
+	.option('-v, --verbose', 'dump query & response')
 	.parse(process.argv);
 
 http.globalAgent.maxSockets = parseInt(args.concurrent, 10);
@@ -29,7 +30,7 @@ if(args.rawreq) {
 
 var options = {
 			host: args.server,
-			port: 80,
+			port: args.port,
 			method: 'POST',
 			path: '/' + args.operation,
 			headers: {
@@ -40,7 +41,7 @@ var options = {
 		}
 
 var socketName = args.server + ':' + args.port;
-		
+
 if(args.proxy) {
 	var regex = '([^:]+):([0-9]+)';
 	options.host = args.proxy.match(regex)[1];
@@ -52,21 +53,25 @@ var chainRequest = function (options, n) {
 	var request = http.request(
 						options, 
 						function(response){
-							var resData = '';
-							response.on('data', function (chunk) {
-								resData += chunk;
-							});
-							response.on('end', function () {});
-
-							if(n>0) {
-								chainRequest(options, n-1);
+							if(args.verbose) {
+								var resData = '';
+								response.on('data', function (chunk) {
+									resData += chunk;
+								});
+								response.on('end', function () {
+									console.log('res:' + resData);
+								});
 							}
 						});
 
 	request.on('error', function (error) {
-		console.log("ERROR: " + error.message);
+		console.log('ERROR(' + n + '): ' + error.message);
 	});
+	if(args.verbose) {
+		console.log('req:' + data);
+	}
 
+		
 	request.write(data);
 	request.end();
 }
